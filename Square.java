@@ -5,8 +5,9 @@ public class Square{
     private Boolean isHit;
     private Boolean isShip;
 
-    public void mark(){
+    public Boolean mark(){
         this.isHit = true;
+        return isShip;
     }
 
     public void makeShip(){
@@ -18,6 +19,8 @@ public class Square{
 
         this.isShip = true;
     }
+
+    
 
     public Square(Integer yPos, Integer xPos){
         this.xPos = xPos;
@@ -41,5 +44,14 @@ public class Square{
         }
         return square;
     }
+
+    public Integer getxPos() {
+        return xPos;
+    }
+
+    public Integer getyPos() {
+        return yPos;
+    }
+
 
 }
