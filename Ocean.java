@@ -6,6 +6,7 @@ public class Ocean {
     
     private List<Square> ocean;
     private List<Square> unableToBeBuild;
+    private List<Ship> shipList;
     private Integer height = 10;
     private Integer width = 10;
     
@@ -13,6 +14,7 @@ public class Ocean {
 
         ocean = new LinkedList<Square>();
         unableToBeBuild = new LinkedList<>();
+        shipList = new LinkedList<>();
         
         for(int i = 0;i<height; i++){
             for(int j = 0; j<width; j++){
@@ -28,8 +30,7 @@ public class Ocean {
 
         Ship ship = new Ship(y, x, type, dimension);
         List<Square> shipInProgress = new ArrayList<>();
-        List<Integer> borders = new ArrayList<>();
-
+        
         if(dimension == 'h'){
             for(int i = 0; i < type; i++){
                 try{
@@ -61,94 +62,53 @@ public class Ocean {
         for(Square s: shipInProgress){
             s.makeShip();
             ship.makeShip(s);
-        }
-
-        Integer index = 0;
-        for(Square s: shipInProgress){
-
+            shipList.add(ship);
             // Here comes inability to build over another ship
             unableToBeBuild.add(s);
-            
-            // Here comes prohibition to build nearby another ship LOTS OF CODE :c 
-            // TODO:
-            //      make it into the function and/or maybe shorten it
-            //      put borders into different list maybe
-            Integer yPos = s.getyPos();
-            Integer xPos = s.getxPos();
-
-            if(dimension == 'h'){
-
-                try{
-                    if(index == 0){
-                        for(int i = -1; i<2;i++){
-                            unableToBeBuild.add(ocean.get((yPos+i)*10+xPos-1));
-                        }
-                    }
-                    if(index == shipInProgress.size()-1){
-                        for(int i=-1;i<2;i++){
-                            unableToBeBuild.add(ocean.get((yPos+i)*10+xPos+1));  
-                        }
-                    }
-                }catch(Exception e){
-
-                }
-                try{
-                    unableToBeBuild.add(ocean.get((yPos+1)*10+xPos));
-                }catch(Exception e){
-                    //System.out.println("upper border cannot be build");
-                }
-                try{
-                    unableToBeBuild.add(ocean.get((yPos-1)*10+xPos));
-                }catch(Exception e){
-                    //System.out.println("lower border cannot be build");
-                }
-
-                
-                
-
-            }else{
-
-                try{
-                    if(index == 0){
-                        for(int i = -1; i<2;i++){
-                            unableToBeBuild.add(ocean.get((yPos-1)*10+xPos+i));
-                        }
-                    }
-                    if(index == shipInProgress.size()-1){
-                        for(int i=-1;i<2;i++){
-                            unableToBeBuild.add(ocean.get((yPos+1)*10+xPos+i));  
-                        }
-                    }
-                }catch(Exception e){
-
-                }
-
-                try{
-                    unableToBeBuild.add(ocean.get(yPos*10+(x-1)));
-                }catch(Exception e){
-
-                }
-                try{
-                    unableToBeBuild.add(ocean.get(yPos*10+(x+1)));
-                }catch(Exception e){
-
-                }
-                
-                
-            }
-            
-            index++;
         }
 
+        List<Square> borders = findAround(ship);
+        for(Square s: borders){
+            unableToBeBuild.add(s);
+        }
 
         return "Ship has been built";
 
     }
 
+
+
     public String quess(int yPos, int xPos){
+        
         String msg = "Miss";
         Integer squareNum = yPos * 10 + xPos;
-        ocean.get(squareNum).mark();
+        Square hit = ocean.get(squareNum);
+        
+        
+
+        if(hit.mark()){
+            // NEXT MOVE
+            msg = "HIT!";
+            // CHECK IF GUESS MAKES SHIP COLLAPSE ( TURN IT INTO THE FUNCTION )
+            for(Ship ship: getShipList()){
+                for(Square s: ship.getShipPositions()){
+                    if(s.equals(hit)){
+                        if(ship.checkIfDead()){
+                            List<Square> toBeMarked = findAround(ship);
+                            for(Square squareAround: toBeMarked){
+                                squareAround.mark();
+                            }
+                            // WHOLE SHIP IS DEAD -- MAKE X AROUND IT! -- USE OR MAKE FUNCTION TO FIND EVERY SQUARE AROUND SHIP  
+                            msg += "WP, YOU KILLED THE WHOLE SHIP!";  
+                        }
+                    }
+                }
+            }            
+        }else{
+            // MOVE NO MORE
+        }
+        
+        
         return msg;
     }
 
@@ -179,6 +139,14 @@ public class Ocean {
         }
         return sb.toString();
     } 
+
+    public List<Ship> getShipList() {
+        return shipList;
+    }
+
+    public void setShipList(List<Ship> shipList) {
+        this.shipList = shipList;
+    }
     
     /*public String toString(){
         StringBuffer sb = new StringBuffer();
