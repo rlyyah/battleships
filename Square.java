@@ -1,4 +1,4 @@
-public class Square{
+public class Square {
 
     private Integer xPos;
     private Integer yPos;
@@ -51,6 +51,14 @@ public class Square{
 
     public Integer getyPos() {
         return yPos;
+    }
+
+    public Boolean getIsHit() {
+        return isHit;
+    }
+
+    public void setIsHit(Boolean isHit) {
+        this.isHit = isHit;
     }
 
 
