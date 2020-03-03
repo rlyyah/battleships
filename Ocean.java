@@ -75,7 +75,80 @@ public class Ocean {
         return "Ship has been built";
 
     }
+    
+    private List<Square> findAround(Ship ship){
+        List<Square> shipBorders = new LinkedList<>();
+        Integer index = 0;
+        for(Square s: ship.getShipPositions()){
 
+            Integer yPos = s.getyPos();
+            Integer xPos = s.getxPos();
+
+            if(ship.getDimension() == 'h'){
+
+                try{
+                    if(index == 0){
+                        for(int i = -1; i<2;i++){
+                            shipBorders.add(ocean.get((yPos+i)*10+xPos-1));
+                        }
+                    }
+                    if(index == ship.getShipPositions().size()-1){
+                        for(int i=-1;i<2;i++){
+                            shipBorders.add(ocean.get((yPos+i)*10+xPos+1));  
+                        }
+                    }
+                }catch(Exception e){
+
+                }
+                try{
+                    shipBorders.add(ocean.get((yPos+1)*10+xPos));
+                }catch(Exception e){
+                    //System.out.println("upper border cannot be build");
+                }
+                try{
+                    shipBorders.add(ocean.get((yPos-1)*10+xPos));
+                }catch(Exception e){
+                    //System.out.println("lower border cannot be build");
+                }
+
+                
+                
+
+            }else{
+
+                try{
+                    if(index == 0){
+                        for(int i = -1; i<2;i++){
+                            shipBorders.add(ocean.get((yPos-1)*10+xPos+i));
+                        }
+                    }
+                    if(index == ship.getShipPositions().size()-1){
+                        for(int i=-1;i<2;i++){
+                            shipBorders.add(ocean.get((yPos+1)*10+xPos+i));  
+                        }
+                    }
+                }catch(Exception e){
+
+                }
+
+                try{
+                    shipBorders.add(ocean.get(yPos*10+(xPos-1)));
+                }catch(Exception e){
+
+                }
+                try{
+                    shipBorders.add(ocean.get(yPos*10+(xPos+1)));
+                }catch(Exception e){
+
+                }
+                
+                
+            }   
+            index++;         
+        }
+        return shipBorders;
+
+    }
 
 
     public String quess(int yPos, int xPos){
