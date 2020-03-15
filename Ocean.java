@@ -26,26 +26,29 @@ public class Ocean {
         }
     }
 
-    public String addShip(Integer y, Integer x, Integer type, Character dimension){
+    public Boolean addShip(Integer y, Integer x, Integer type, Character dimension){
 
         Ship ship = new Ship(y, x, type, dimension);
         List<Square> shipInProgress = new ArrayList<>();
         
         if(dimension == 'h'){
             for(int i = 0; i < type; i++){
-                try{
-                    shipInProgress.add(ocean.get(y*10+x+i));
-                }catch(Exception e){
-                    return "Ship cannot be build here!";
-                }
-                
+                if(x+i<10){
+                    try{
+                        shipInProgress.add(ocean.get(y*10+x+i));
+                    }catch(Exception e){
+                        return false;
+                    }
+                }else{
+                    return false;
+                }    
             }
         }else{
             for(int i = 0; i < type; i++){
                 try{
                     shipInProgress.add(ocean.get((y+i)*10+x));
                 }catch(Exception e){
-                    return "Ship cannot be build here!";
+                    return false;
                 }
             }
         }
@@ -53,7 +56,7 @@ public class Ocean {
         if(!unableToBeBuild.isEmpty()){
             for(Square s: unableToBeBuild){
                 if(shipInProgress.contains(s)){
-                    return "Ship cannot be build here"; 
+                    return false; 
                 }
            
             }
@@ -72,7 +75,7 @@ public class Ocean {
             unableToBeBuild.add(s);
         }
 
-        return "Ship has been built";
+        return true;
 
     }
     
@@ -89,12 +92,16 @@ public class Ocean {
                 try{
                     if(index == 0){
                         for(int i = -1; i<2;i++){
+                            
                             shipBorders.add(ocean.get((yPos+i)*10+xPos-1));
                         }
                     }
                     if(index == ship.getShipPositions().size()-1){
                         for(int i=-1;i<2;i++){
-                            shipBorders.add(ocean.get((yPos+i)*10+xPos+1));  
+                            if(xPos+1<10){
+                                shipBorders.add(ocean.get((yPos+i)*10+xPos+1));
+                            }
+                              
                         }
                     }
                 }catch(Exception e){
@@ -119,12 +126,18 @@ public class Ocean {
                 try{
                     if(index == 0){
                         for(int i = -1; i<2;i++){
-                            shipBorders.add(ocean.get((yPos-1)*10+xPos+i));
+                            if(xPos+i<10){
+                                shipBorders.add(ocean.get((yPos-1)*10+xPos+i));
+                            }
+
                         }
                     }
                     if(index == ship.getShipPositions().size()-1){
                         for(int i=-1;i<2;i++){
-                            shipBorders.add(ocean.get((yPos+1)*10+xPos+i));  
+                            if(xPos+i<10){
+                                shipBorders.add(ocean.get((yPos+1)*10+xPos+i));
+                            }
+                              
                         }
                     }
                 }catch(Exception e){
@@ -137,7 +150,9 @@ public class Ocean {
 
                 }
                 try{
-                    shipBorders.add(ocean.get(yPos*10+(xPos+1)));
+                    if(xPos+1<10){
+                        shipBorders.add(ocean.get(yPos*10+(xPos+1)));
+                    }
                 }catch(Exception e){
 
                 }
@@ -152,7 +167,11 @@ public class Ocean {
 
 
     public String quess(int yPos, int xPos){
-        
+        // TODO:
+        //      if(alreadyMarked){make move again}
+
+
+
         String msg = "Miss";
         Integer squareNum = yPos * 10 + xPos;
         Square hit = ocean.get(squareNum);
@@ -219,6 +238,22 @@ public class Ocean {
 
     public void setShipList(List<Ship> shipList) {
         this.shipList = shipList;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
     
     /*public String toString(){
