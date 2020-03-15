@@ -9,6 +9,17 @@ public class PlayerSetUp {
     //
 
     public PlayerSetUp(){
+    prepareMap();
+        
+    }
+    private Ocean prepareMap(){
+
+    // TODO:
+    // DIVIDE IT INTO SEPERATE CLASSES,
+    // USE NOTEPAD/.TXT FILE TO DISPLAY INSTRUCTIONS
+    //  THIS NEEDS TO BE CHANGED IF MAP IS GOING TO BE BIGGER THAN 10X10
+
+
         Helpers.print("WELCOME TO THE BATTLESHIP GAME!");
         Helpers.print("SET UP YOUR 5 SHIPS AND PREPARE FOR THE BATTLE!");
         Helpers.print("YOU CAN PLACE YOUR SHIPS VERTICALLY OR HORIZONTALLY");
@@ -42,6 +53,11 @@ public class PlayerSetUp {
             Integer shipLength = 0;
             Character dimension = 'q';
             Boolean askForShip = true;
+            Helpers.print("Avaible ships:");
+            for(String shipKind: shipNames.keySet()){
+                System.out.print(shipKind + " (" + String.valueOf(shipNames.get(shipKind)) + "), ");
+            }
+            Helpers.print("");
 
             while(askForShip){
                 Helpers.print("Provide ship name");
@@ -79,12 +95,26 @@ public class PlayerSetUp {
                     if(alphabet.contains(String.valueOf(position.charAt(0)))){
                         xPos = alphabet.indexOf(String.valueOf(position.charAt(0)));
                         yPos = Integer.parseInt(String.valueOf(position.charAt(1))) - 1;
+                        System.out.println("X: " + xPos + "Y: " + yPos);
+                        if(yPos>=0 && yPos<11){
+                            if(playerOcean.addShip(yPos, xPos, shipLength, dimension)){
+                                askForPosition = false;
+                            }
+                        }
+                    }
+                    //  THIS NEEDS TO BE CHANGED IF MAP IS GOING TO BE BIGGER THAN 10X10
+                }else if(position.length() == 3){
+                    position = position.toLowerCase();
+                    if(alphabet.contains(String.valueOf(position.charAt(0)))){
+                        xPos = alphabet.indexOf(String.valueOf(position.charAt(0)));
+                        yPos = 9;
                         if(yPos>0 && yPos<11){
                             if(playerOcean.addShip(yPos, xPos, shipLength, dimension)){
                                 askForPosition = false;
                             }
                         }
                     }
+
                 }
 
 
@@ -97,10 +127,14 @@ public class PlayerSetUp {
             if(shipNames.isEmpty()){
                 keepAsking = false;
             }
-        }
-        
-    }
 
+        
+        }
+
+        return playerOcean;
+        
+    
+    }
 
 
 
